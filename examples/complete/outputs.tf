@@ -19,31 +19,31 @@ output "ecs_service_desired_count" {
 }
 
 output "name" {
-  value       = aws_route53_record.a_record.name
+  value       = module.ecs_task_service.name
   description = "The name of the record."
 }
 
 output "fqdn" {
-  value       = aws_route53_record.a_record.fqdn
+  value       = module.ecs_task_service.fqdn
   description = "FQDN built using the zone domain and name."
 }
 
 output "id" {
-  value       = aws_acm_certificate.domain_cert.id
+  value       = module.ecs_task_service.id
   description = "The ARN of the certificate"
 }
 
 output "arn" {
-  value       = aws_acm_certificate.domain_cert.arn
+  value       = module.ecs_task_service.arn
   description = "The ARN of the certificate"
 }
 
 output "domain_name" {
-  value       = aws_acm_certificate.domain_cert.domain_name
+  value       = module.ecs_task_service.domain_name
   description = "The domain name for which the certificate is issued"
 }
 
 output "status" {
-  value       = aws_acm_certificate.domain_cert.status
+  value       = module.ecs_task_service.status
   description = "Status of the certificate."
 }

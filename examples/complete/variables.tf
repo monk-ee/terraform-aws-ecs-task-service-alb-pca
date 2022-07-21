@@ -11,167 +11,171 @@ variable "short_region" {
   default     = null
 }
 
-variable "workload" {
+variable "availability_zones" {
+  type        = list(string)
+  description = "List of availability zones"
+}
+
+variable "vpc_cidr_block" {
   type        = string
+  description = "VPC CIDR block"
+}
+
+variable "workload" {
+  type = string
   description = "Workload name differentiator."
-  default     = "default"
+  default = "default"
 }
 
 # Container Information
 variable "container_registry" {
-  type        = string
+  type = string
   description = "The registry and container name"
-  default     = null
+  default = null
 }
 
 variable "container_tag" {
-  type        = string
+  type = string
   description = "The container tag to deploy (DO NOT USE LATEST, I'M WARNING YOU)"
-  default     = "latest"
+  default = "latest"
 }
 
 variable "container_cpu" {
-  type        = number
+  type = number
   description = "The container CPU"
-  default     = 256
+  default = 256
 }
 
 variable "container_memory" {
-  type        = number
+  type = number
   description = "The container memory"
-  default     = 512
+  default = 512
 }
 
 variable "container_port" {
-  type        = number
+  type = number
   description = "The container port"
-  default     = 80
+  default = 80
 }
 
 variable "host_port" {
-  type        = number
+  type = number
   description = "The host port"
-  default     = 80
+  default = 80
 }
 
 variable environment_variables {
-  type        = map(string)
+  type = map(string)
   description = "Map of env vars to push into container"
-  default     = null
+  default = null
 }
 
 variable log_configuration {
-  type        = any
+  type = any
   description = "Log configuration"
-  default     = null
+  default = null
 }
 
 variable "container_insights" {
-  type        = string
+  type = string
   description = "Turn on container insights for cloud watch - does incur a cost"
-  default     = "enabled"
+  default = "enabled"
 }
 
 #ECS Configuration
 variable "default_capacity_provider" {
-  type        = string
+  type = string
   description = "Default capacity provider for fargate - option for spot and cost recovery here"
-  default     = "FARGATE"
+  default = "FARGATE"
 }
 
 variable "capacity_providers" {
-  type    = list(string)
+  type = list(string)
   default = ["FARGATE_SPOT", "FARGATE"]
 }
 
 variable "service_replicas" {
-  type        = number
+  type = number
   description = "Desired count of service replicas"
-  default     = 1
+  default = 1
 }
 
 variable "max_capacity" {
-  type        = number
+  type = number
   description = "Maximum Appscaling capacity"
-  default     = 1
+  default = 1
 }
 
 variable "min_capacity" {
-  type        = number
+  type = number
   description = "Minimum Appscaling capacity"
-  default     = 1
+  default = 1
 }
 
 variable "cluster_id" {
-  type        = string
+  type = string
   description = "The ID of the ECS cluster to deploy into"
 }
 
 variable "cluster_name" {
-  type        = string
+  type =  string
   description = "The name of the ECS cluster to deploy into"
 }
 
 variable "cloudwatch_arn" {
-  type        = string
+  type = string
   description = "A very angry managed cloud watch policy - seems excessive"
-  default     = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+  default = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
 }
 
 # Networking and Security
-variable "vpc_id" {
-  type        = string
-  description = "Deployment VPC ID"
-  default     = ""
-}
-
 variable "routable_security_group_ids" {
-  type        = list(string)
+  type = list(string)
   description = "The public security for ECS deployments"
-  default     = []
+  default = []
 }
 
 variable "non_routable_security_group_ids" {
-  type        = list(string)
+  type = list(string)
   description = "The private security for ECS deployments"
-  default     = []
+  default = []
 }
 
 variable "non_routable_subnet_ids" {
-  type        = list(string)
+  type = list(string)
   description = "The non routable subnets for ECS deployments"
-  default     = []
+  default = []
 }
 
 variable "routable_subnet_ids" {
-  type        = list(string)
+  type = list(string)
   description = "routable_subnet_ids"
-  default     = []
+  default = []
 }
 
 #ALB, DNS and Certificate Configuration
 variable "common_name" {
-  type        = string
+  type = string
   description = "The parent domain suffix for the certificate"
-  default     = null
+  default = null
 }
 
 variable "zone_id" {
-  type        = string
+  type = string
   description = "The domain zone id"
-  default     = null
+  default = null
 }
 
 variable "ssl_policy" {
-  type        = string
+  type = string
   description = ""
-  default     = "ELBSecurityPolicy-2016-08"
+  default = "ELBSecurityPolicy-2016-08"
 }
 
 variable "certificate_authority_arn" {
-  type        = string
+  type = string
   description = ""
-  default     = null
+  default = null
 }
 
 variable "stickiness" {
@@ -184,51 +188,51 @@ variable "stickiness" {
 }
 
 variable "health_check_path" {
-  type        = string
+  type = string
   description = "Health Check Path"
-  default     = "/"
+  default = "/"
 }
 
 variable "internal" {
-  type        = bool
+  type = bool
   description = "Type of ALB"
-  default     = true
+  default = true
 }
 
 # KMS Keys
 variable "ecr_kms_key_arn" {
-  type        = string
+  type = string
   description = "KMS Key ARN for ECR"
-  default     = "arn:aws:kms:::alias/aws/ecr"
+  default = "arn:aws:kms:::alias/aws/ecr"
 }
 
 variable "secretsmanager_kms_key_arn" {
-  type        = string
+  type = string
   description = "KMS Key ARN for Secrets Manager"
-  default     = "arn:aws:kms:::alias/aws/secretsmanager"
+  default = "arn:aws:kms:::alias/aws/secretsmanager"
 }
 
 # IAM Resource Constraints
 variable "secretsmanager_resource_constraints" {
-  type        = list(string)
+  type = list(string)
   description = "Constraints for Secrets Manager access from ECR"
-  default     = ["*"]
+  default = ["*"]
 }
 
 variable "s3_resource_constraints" {
-  type        = list(string)
+  type = list(string)
   description = "Constraints for S3 access from ECR"
-  default     = ["*"]
+  default = ["*"]
 }
 
 variable "sqs_resource_constraints" {
-  type        = list(string)
+  type = list(string)
   description = "Constraints for SQS access from ECR"
-  default     = ["*"]
+  default = ["*"]
 }
 
 variable "ecr_resource_constraints" {
-  type        = list(string)
+  type = list(string)
   description = "Constraints for Token Access to ECR"
-  default     = ["*"]
+  default = ["*"]
 }

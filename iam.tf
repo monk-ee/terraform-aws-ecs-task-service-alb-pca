@@ -1,7 +1,7 @@
 # Policy documents
 data "aws_iam_policy_document" "ecs_ecr_access" {
   statement {
-    sid = "AllowECSECRGetImage"
+    sid     = "AllowECSECRGetImage"
     actions = [
       "ecr:DescribeImageScanFindings",
       "ecr:GetLifecyclePolicyPreview",
@@ -16,22 +16,22 @@ data "aws_iam_policy_document" "ecs_ecr_access" {
       "ecr:GetLifecyclePolicy",
     ]
     effect    = "Allow"
-    resources = ["*"]
+    resources = var.ecr_resource_constraints
   }
   statement {
     sid       = "AllowECSKMSAccess"
     effect    = "Allow"
     actions   = ["kms:Decrypt"]
-    resources = ["arn:aws:kms:ap-southeast-2:318229182869:key/958bb3b5-4946-426a-9292-0ab3ff8c86b4"]
+    resources = [var.ecr_kms_key_arn]
   }
 }
 
 data "aws_iam_policy_document" "ecs_log_access" {
-   statement {
-    sid = "AllowECSCloudWatch"
+  statement {
+    sid     = "AllowECSCloudWatch"
     actions = [
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
     ]
     effect    = "Allow"
     resources = ["*"]
@@ -43,7 +43,7 @@ data "aws_iam_policy_document" "ecs_ecr_auth" {
     sid       = "AllowECSECRAuth"
     actions   = ["ecr:GetAuthorizationToken"]
     effect    = "Allow"
-    resources = ["*"]
+    resources = var.ecr_resource_constraints
   }
 }
 
@@ -60,29 +60,30 @@ data "aws_iam_policy_document" "ecs_task_assume" {
 
 data "aws_iam_policy_document" "ecs_s3_access" {
   statement {
-    sid     = "AllowECSS3All"
-    effect  = "Allow"
-    actions = ["s3:*"]
-    resources = ["*"]
-    #resources = [for arn in data.aws_s3_bucket.buckets[*].arn : "${arn}/*"]
+    sid       = "AllowECSS3All"
+    effect    = "Allow"
+    actions   = ["s3:*"]
+    resources = var.s3_resource_constraints
   }
 }
 
 data "aws_iam_policy_document" "ecs_task_secrets" {
   statement {
-    sid       = "ECSTaskSecretAccess"
-    effect    = "Allow"
-    actions   = ["secretsmanager:GetResourcePolicy",
-                "secretsmanager:GetSecretValue",
-                "secretsmanager:DescribeSecret",
-                "secretsmanager:ListSecretVersionIds"]
-    resources = ["*"]
+    sid     = "ECSTaskSecretAccess"
+    effect  = "Allow"
+    actions = [
+      "secretsmanager:GetResourcePolicy",
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:ListSecretVersionIds"
+    ]
+    resources = var.secretsmanager_resource_constraints
   }
   statement {
     sid       = "ECSTaskKMSAccess"
     effect    = "Allow"
     actions   = ["kms:Decrypt"]
-    resources = ["arn:aws:kms:ap-southeast-2:318229182869:key/44db9e10-ac30-4dcd-9ab9-7ded5d646dd0"]
+    resources = [var.secretsmanager_kms_key_arn]
   }
 }
 
@@ -140,14 +141,14 @@ resource "aws_iam_role_policy_attachment" "ecs_s3" {
 #sqs
 data "aws_iam_policy_document" "ecs_task_queue_access" {
   statement {
-    sid    = "AllowEcsSQSReadDelete"
-    effect = "Allow"
+    sid     = "AllowEcsSQSReadDelete"
+    effect  = "Allow"
     actions = [
       "sqs:ReceiveMessage",
       "sqs:DeleteMessage",
       "sqs:SendMessage"
     ]
-    resources = ["*"]
+    resources = var.sqs_resource_constraints
 
   }
 }
